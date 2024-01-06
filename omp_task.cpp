@@ -52,9 +52,7 @@ int main() {
                     for (c = 0; c < n; ++c) matrixResult[a][b] += matrixA[a][c] * matrixB[c][b];
     }
 
-    double endTime = omp_get_wtime();
-
-    cout << "matrix multiplication ended.\namount of threads: " << amountOfThreads <<  "\ntime spent: " << endTime - startTime;
+    cout << "matrix multiplication ended.\namount of threads: " << amountOfThreads <<  "\ntime spent: " << omp_get_wtime() - startTime;
 
     system("pause");
     return 0;

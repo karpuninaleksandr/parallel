@@ -37,19 +37,20 @@ int main(int argc, char** argv) {
         matrix_2.close();
 
         cout << "matrix reading done.\n";
-    }
 
-    cout << "matrix multiplication started...\n";
 
-    double startTime = MPI_Wtime();
+        cout << "matrix multiplication started...\n";
 
-    for (int i = 1; i < size; ++i) {
-        MPI_Send(&matrixA[dataForProcess * i * n], (i == size - 1) ? (dataForProcess + n % size) * n : dataForProcess * n,
+        double startTime = MPI_Wtime();
+
+        for (int i = 1; i < size; ++i) {
+            MPI_Send(&matrixA[dataForProcess * i * n], (i == size - 1) ? (dataForProcess + n % size) * n : dataForProcess * n,
                  MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-        MPI_Send(&matrixB[0], n * n, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
+            MPI_Send(&matrixB[0], n * n, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
+        }
     } else {
-        MPI_Recv(&A[dataForProcess * rank * n], (dataForProcess + extraData) * n, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
-        MPI_Recv(&B[0], n * n, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
+        MPI_Recv(&matrixA[dataForProcess * rank * n], (dataForProcess + extraData) * n, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
+        MPI_Recv(&matrixB[0], n * n, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
     }
 
     for (int i = dataForProcess * rank; i < dataForProcess * (rank + 1) + extraData; ++i)
@@ -64,11 +65,9 @@ int main(int argc, char** argv) {
     if (rank != 0) MPI_Send(&matrixResult[dataForProcess * rank * n], (dataForProcess + extraData) * n, MPI_DOUBLE, 0, 4, MPI_COMM_WORLD);
     else {
         for (int i = 1; i < size; ++i) MPI_Recv(&matrixResult[dataForProcess * i * n], (i == size - 1) ? (dataForProcess + n % size) * n :
-        dataForProcess * n, MPI_DOUBLE, i, 4, MPI_COMM_WORLD, &status);
+            dataForProcess * n, MPI_DOUBLE, i, 4, MPI_COMM_WORLD, &status);
 
-        double endTime = MPI_Wtime();
-
-        cout << "matrix multiplication ended.\ntime spent: " <<  endTime - startTime;
+        cout << "matrix multiplication ended.\ntime spent: " <<  MPI_Wtime() - startTime;
     }
 
     MPI_Finalize();
