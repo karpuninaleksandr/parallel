@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
     ifstream matrix_1, matrix_2;
-    int amountOfThreads, a = 0, b = 0, c, n = 1000;
+    int amountOfThreads, a, b, c, n = 1000;
 
     int** matrixA, ** matrixB, ** matrixResult;
 
@@ -47,8 +47,8 @@ int main() {
 #pragma omp parallel num_threads(amountOfThreads)
     {
 #pragma omp for private(a, b, c)
-            for (; a < n; ++a)
-                for (; b < n; ++b)
+            for (a = 0; a < n; ++a)
+                for (b = 0; b < n; ++b)
                     for (c = 0; c < n; ++c) matrixResult[a][b] += matrixA[a][c] * matrixB[c][b];
     }
 
