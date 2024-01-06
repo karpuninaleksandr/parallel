@@ -8,6 +8,7 @@ int main(int argc, char** argv) {
     ifstream matrix_1, matrix_2;
 
     int rank, size, extraData, dataForProcess, n = 1000;
+    double startTime;
 
     int* matrixA = new int[n * n], * matrixB = new int[n * n], * matrixResult = new int[n * n];
 
@@ -41,7 +42,7 @@ int main(int argc, char** argv) {
 
         cout << "matrix multiplication started...\n";
 
-        double startTime = MPI_Wtime();
+        startTime = MPI_Wtime();
 
         for (int i = 1; i < size; ++i) {
             MPI_Send(&matrixA[dataForProcess * i * n], (i == size - 1) ? (dataForProcess + n % size) * n : dataForProcess * n,
